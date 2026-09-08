@@ -5,12 +5,10 @@ import pandas as pd
 
 app = Flask(__name__)
 
-
 model = joblib.load("gurgaon_price_model_pipeline.pkl")
 
 
 def format_price(price):
-    """Turn a raw rupee number into a readable string like '1.25 Cr' or '45.00 L'."""
     if price >= 10000000:
         return f"₹ {price / 10000000:.2f} Cr"
     elif price >= 100000:
@@ -26,7 +24,6 @@ def home():
 
     if request.method == "POST":
         try:
-
             bedroom_num = float(request.form["bedroom_num"])
             bathroom_num = float(request.form["bathroom_num"])
             balcony_num = float(request.form["balcony_num"])
@@ -34,19 +31,15 @@ def home():
             total_floor = float(request.form["total_floor"])
             age = float(request.form["age"])
             property_type = request.form["property_type"]
-            owntype = request.form["owntype"]
+            owntype = int(request.form["owntype"])
             facing = float(request.form["facing"])
             sector_num = float(request.form["sector_num"])
-
-
 
             if sector_num < 1 or sector_num > 113:
                 raise ValueError("Sector number must be between 1 and 113.")
 
-
             bed_x_bath = bedroom_num * bathroom_num
             area_per_floor = area_sqft / (total_floor if total_floor != 0 else 1)
-
 
             input_row = pd.DataFrame([{
                 "BEDROOM_NUM": bedroom_num,
@@ -63,7 +56,6 @@ def home():
                 "BED_X_BATH": bed_x_bath,
                 "AREA_PER_FLOOR": area_per_floor,
             }])
-
 
             predicted_log_price = model.predict(input_row)[0]
             predicted_price = np.expm1(predicted_log_price)

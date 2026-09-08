@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +7,6 @@
 </head>
 <body>
 
-```
 <div class="container">
 
     <h1>Real Estate Price Predictor</h1>
@@ -16,116 +14,59 @@
 
     <form method="POST" action="/">
 
-        <!-- Bedrooms -->
         <div class="form-group">
             <label for="bedroom_num">Bedrooms</label>
-            <input
-                type="number"
-                name="bedroom_num"
-                id="bedroom_num"
-                min="1"
-                step="1"
-                placeholder="e.g. 2"
-                required
-            >
+            <input type="number" name="bedroom_num" id="bedroom_num" min="1" step="1" placeholder="e.g. 2" required>
         </div>
 
-        <!-- Bathrooms -->
         <div class="form-group">
             <label for="bathroom_num">Bathrooms</label>
-            <input
-                type="number"
-                name="bathroom_num"
-                id="bathroom_num"
-                min="1"
-                step="1"
-                placeholder="e.g. 2"
-                required
-            >
+            <input type="number" name="bathroom_num" id="bathroom_num" min="1" step="1" placeholder="e.g. 2" required>
         </div>
 
-        <!-- Balconies -->
         <div class="form-group">
             <label for="balcony_num">Balconies</label>
-            <input
-                type="number"
-                name="balcony_num"
-                id="balcony_num"
-                min="0"
-                step="1"
-                placeholder="e.g. 1"
-                required
-            >
+            <input type="number" name="balcony_num" id="balcony_num" min="0" step="1" placeholder="e.g. 1" required>
         </div>
 
-        <!-- Area -->
         <div class="form-group">
             <label for="area_sqft">Area (in sq. ft.)</label>
-            <input
-                type="number"
-                step="any"
-                min="1"
-                name="area_sqft"
-                id="area_sqft"
-                placeholder="e.g. 1450"
-                required
-            >
+            <input type="number" step="any" min="1" name="area_sqft" id="area_sqft" placeholder="e.g. 1450" required>
         </div>
 
-        <!-- Total Floors -->
         <div class="form-group">
             <label for="total_floor">Total Floors in Building</label>
-            <input
-                type="number"
-                step="1"
-                min="1"
-                name="total_floor"
-                id="total_floor"
-                placeholder="e.g. 12"
-                required
-            >
+            <input type="number" step="1" min="1" name="total_floor" id="total_floor" placeholder="e.g. 12" required>
         </div>
 
-        <!-- Property Age -->
         <div class="form-group">
             <label for="age">Property Age (years)</label>
-            <input
-                type="number"
-                step="1"
-                min="0"
-                name="age"
-                id="age"
-                placeholder="e.g. 5"
-                required
-            >
+            <input type="number" step="1" min="0" name="age" id="age" placeholder="e.g. 5" required>
         </div>
 
-        <!-- Property Type -->
         <div class="form-group">
             <label for="property_type">Property Type</label>
             <select name="property_type" id="property_type" required>
-                <option value="Flat">Flat</option>
-                <option value="Independent Floor">Independent Floor</option>
-                <option value="Independent House">Independent House</option>
-                <option value="Villa">Villa</option>
+                <option value="Residential Apartment">Flat / Apartment</option>
+                <option value="Independent/Builder Floor">Independent Floor</option>
+                <option value="Independent House/Villa">Independent House / Villa</option>
             </select>
         </div>
 
-        <!-- Ownership Type -->
         <div class="form-group">
             <label for="owntype">Ownership Type</label>
             <select name="owntype" id="owntype" required>
-                <option value="Freehold">Freehold</option>
-                <option value="Leasehold">Leasehold</option>
-                <option value="Co-operative Society">Co-operative Society</option>
-                <option value="Power of Attorney">Power of Attorney</option>
+                <option value="1">Freehold</option>
+                <option value="2">Co-operative Society</option>
+                <option value="3">Power of Attorney</option>
+                <option value="4">Leasehold</option>
             </select>
         </div>
 
-        <!-- Facing -->
         <div class="form-group">
             <label for="facing">Facing Direction</label>
             <select name="facing" id="facing" required>
+                <option value="0">Not Specified</option>
                 <option value="1">North</option>
                 <option value="2">South</option>
                 <option value="3">East</option>
@@ -137,19 +78,9 @@
             </select>
         </div>
 
-        <!-- Sector -->
         <div class="form-group">
             <label for="sector_num">Sector Number</label>
-            <input
-                type="number"
-                name="sector_num"
-                id="sector_num"
-                min="1"
-                max="113"
-                step="1"
-                placeholder="e.g. 45"
-                required
-            >
+            <input type="number" name="sector_num" id="sector_num" min="1" max="113" step="1" placeholder="e.g. 45" required>
         </div>
 
         <button type="submit">Predict Price</button>
@@ -174,34 +105,28 @@
     const form = document.querySelector("form");
     const fields = form.querySelectorAll("input, select");
 
-    // Restore previously entered values
     window.addEventListener("DOMContentLoaded", () => {
         fields.forEach(field => {
             const saved = sessionStorage.getItem(field.name);
-
             if (saved !== null) {
                 field.value = saved;
             }
         });
     });
 
-    // Save values before submitting
     form.addEventListener("submit", () => {
         fields.forEach(field => {
             sessionStorage.setItem(field.name, field.value);
         });
     });
 
-    // Prevent negative values from being typed/pasted
     fields.forEach(field => {
         if (field.type === "number") {
-
             field.addEventListener("input", () => {
                 if (field.value < 0) {
                     field.value = 0;
                 }
             });
-
             field.addEventListener("keydown", (event) => {
                 if (event.key === "-" || event.key === "e") {
                     event.preventDefault();
@@ -210,7 +135,6 @@
         }
     });
 </script>
-```
 
 </body>
 </html>
