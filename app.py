@@ -5,9 +5,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Load the trained pipeline once, when the server starts.
-# The .pkl file must be in the same folder as this app.py file
-# (or update the path below to point to wherever you saved it).
+
 model = joblib.load("gurgaon_price_model_pipeline.pkl")
 
 
@@ -28,7 +26,7 @@ def home():
 
     if request.method == "POST":
         try:
-            # 1. Read every field from the submitted form
+
             bedroom_num = float(request.form["bedroom_num"])
             bathroom_num = float(request.form["bathroom_num"])
             balcony_num = float(request.form["balcony_num"])
@@ -40,12 +38,16 @@ def home():
             facing = float(request.form["facing"])
             sector_num = float(request.form["sector_num"])
 
-            # 2. Re-create the same engineered features used during training
+
+
+            if sector_num < 1 or sector_num > 113:
+                raise ValueError("Sector number must be between 1 and 113.")
+
+
             bed_x_bath = bedroom_num * bathroom_num
             area_per_floor = area_sqft / (total_floor if total_floor != 0 else 1)
 
-            # 3. Build a single-row DataFrame with the exact column names
-            #    the model pipeline was trained on
+
             input_row = pd.DataFrame([{
                 "BEDROOM_NUM": bedroom_num,
                 "BATHROON_NUM_FLOAT": bathroom_num,
@@ -62,8 +64,7 @@ def home():
                 "AREA_PER_FLOOR": area_per_floor,
             }])
 
-            # 4. Predict (the model was trained on log1p(price), so we
-            #    convert the prediction back to a normal rupee value)
+
             predicted_log_price = model.predict(input_row)[0]
             predicted_price = np.expm1(predicted_log_price)
 

@@ -1,4 +1,3 @@
-# ------------------- IMPORTS -------------------
 import pandas as pd
 import numpy as np
 import re
@@ -10,13 +9,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from xgboost import XGBRegressor
 
-# ------------------- LOAD DATA -------------------
 df = pd.read_csv('gurgaon_10k.csv', low_memory=False)
 
-# Filter rows containing 'Sector'
+
 df = df[df['LOCALITY'].str.contains("Sector", na=False)].copy()
 
-# Extract sector number directly from 'LOCALITY'
+
 df['SECTOR_NUM'] = pd.to_numeric(
     df['LOCALITY'].str.extract(r'Sector\s*(\d+)')[0],
     errors='coerce'
@@ -41,15 +39,15 @@ def convert_area_to_sqft(area):
     num = float(num_match[0])
 
     if 'sq.yard' in area or 'sq yard' in area or 'sq.yards' in area:
-        return num * 9.0            # 1 sq.yard = 9 sq.ft
+        return num * 9.0           
     elif 'sq.m' in area or 'sq. meter' in area or 'sqm' in area:
-        return num * 10.7639        # 1 sq.meter = 10.7639 sq.ft
+        return num * 10.7639      
     elif 'acre' in area:
-        return num * 43560.0        # 1 acre = 43560 sq.ft
+        return num * 43560.0        
     elif 'sq.ft' in area or 'sqft' in area:
         return num
     else:
-        return num  # unit not detected, assume already sq.ft
+        return num  
 
 
 def convert_price(price):
@@ -89,7 +87,7 @@ df['BED_X_BATH'] = df['BEDROOM_NUM'] * df['BATHROON_NUM_FLOAT']
 df['AREA_PER_FLOOR'] = df['AREA_FLOAT'] / df['TOTAL_FLOOR'].replace(0, 1)
 df.loc[:, 'AVG_AREA_SQFT'] = df[['MIN_AREA_SQFT', 'MAX_AREA_SQFT']].mean(axis=1)
 
-# ------------------- FEATURES -------------------
+
 features = [
     "BEDROOM_NUM",
     "BATHROON_NUM_FLOAT",
@@ -113,7 +111,7 @@ df = df.dropna(subset=["AREA_FLOAT", "BED_X_BATH", "AREA_PER_FLOOR"])
 X = df[features]
 y = df[target]
 
-# ------------------- TRAIN TEST SPLIT -------------------
+
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -121,11 +119,10 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-# Log-transform the target since price is heavily right-skewed
 y_train_log = np.log1p(y_train)
 y_test_log = np.log1p(y_test)
 
-# ------------------- SINGLE PIPELINE (preprocessing + model) -------------------
+
 cat_cols = [
     "PROPERTY_TYPE",
     "OWNTYPE",
@@ -153,19 +150,17 @@ model_pipeline = Pipeline(steps=[
     ))
 ])
 
-# ------------------- FIT -------------------
+
 model_pipeline.fit(X_train, y_train_log)
 
-# ------------------- PREDICTION -------------------
 y_pred_log = model_pipeline.predict(X_test)
 
-# ------------------- EVALUATION -------------------
+
 r2 = r2_score(y_test_log, y_pred_log)
 rmse = np.sqrt(mean_squared_error(y_test_log, y_pred_log))
 
 print("R2 Score:", r2)
 print("RMSE:", rmse)
 
-# ------------------- SAVE FOR WEBSITE / API USE -------------------
 joblib.dump(model_pipeline, "gurgaon_price_model_pipeline.pkl")
 print("Saved model to gurgaon_price_model_pipeline.pkl")
