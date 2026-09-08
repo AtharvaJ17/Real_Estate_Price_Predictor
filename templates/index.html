@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real Estate Price Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Real Estate Price Predictor</h1>
+        <p class="subtitle">Fill in the property details below to get an estimated price.</p>
+
+        <form method="POST" action="/">
+
+            <div class="form-group">
+                <label for="bedroom_num">Bedrooms</label>
+                <select name="bedroom_num" id="bedroom_num" required>
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bathroom_num">Bathrooms</label>
+                <select name="bathroom_num" id="bathroom_num" required>
+                    <option value="1">1</option>
+                    <option value="2" selected>2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="balcony_num">Balconies</label>
+                <select name="balcony_num" id="balcony_num" required>
+                    <option value="0">0</option>
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="area_sqft">Area (in sq. ft.)</label>
+                <input type="number" step="any" name="area_sqft" id="area_sqft" placeholder="e.g. 1450" required>
+            </div>
+
+            <div class="form-group">
+                <label for="total_floor">Total Floors in Building</label>
+                <input type="number" step="any" name="total_floor" id="total_floor" placeholder="e.g. 12" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Property Age (years)</label>
+                <input type="number" step="any" name="age" id="age" placeholder="e.g. 5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="property_type">Property Type</label>
+                <select name="property_type" id="property_type" required>
+                    <option value="Flat">Flat</option>
+                    <option value="Independent Floor">Independent Floor</option>
+                    <option value="Independent House">Independent House</option>
+                    <option value="Villa">Villa</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="owntype">Ownership Type</label>
+                <select name="owntype" id="owntype" required>
+                    <option value="Freehold">Freehold</option>
+                    <option value="Leasehold">Leasehold</option>
+                    <option value="Co-operative Society">Co-operative Society</option>
+                    <option value="Power of Attorney">Power of Attorney</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="facing">Facing Direction</label>
+                <select name="facing" id="facing" required>
+                    <option value="1">North</option>
+                    <option value="2">South</option>
+                    <option value="3">East</option>
+                    <option value="4">West</option>
+                    <option value="5">North-East</option>
+                    <option value="6">North-West</option>
+                    <option value="7">South-East</option>
+                    <option value="8">South-West</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="sector_num">Sector Number</label>
+                <input type="number" step="1" name="sector_num" id="sector_num" placeholder="e.g. 45" required>
+            </div>
+
+            <button type="submit">Predict Price</button>
+
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                Estimated Price: <span>{{ prediction }}</span>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        const form = document.querySelector("form");
+        const fields = form.querySelectorAll("input, select");
+
+        // 1. When the page loads, restore any saved values
+        window.addEventListener("DOMContentLoaded", () => {
+            fields.forEach(field => {
+                const saved = sessionStorage.getItem(field.name);
+                if (saved !== null) {
+                    field.value = saved;
+                }
+            });
+        });
+
+        // 2. Just before submitting, save the current values
+        form.addEventListener("submit", () => {
+            fields.forEach(field => {
+                sessionStorage.setItem(field.name, field.value);
+            });
+        });
+    </script>
+
+</body>
+</html>
