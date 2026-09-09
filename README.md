@@ -1,4 +1,4 @@
-Dataset
+Dataset: https://www.kaggle.com/datasets/arvanshul/gurgaon-real-estate-99acres-com
 
 This project uses the Indian Real Estate – 99acres.com dataset from Kaggle, which contains property listings scraped from 99acres.com across several major Indian cities. For this project, the dataset was filtered down to listings from Gurgaon, focusing specifically on sector-based residential properties (~10,000+ listings) to keep the price-prediction problem scoped to a single, well-defined market.
 
